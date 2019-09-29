@@ -160,14 +160,6 @@ class Plotter:
                 title += self.data[0][i] + '=' + self.data[1][i] + ', '
 
             plot.legend(loc='upper right')
-        elif data_type == 'gpsComp':
-            self.readCsv('gps')
-            self.plotPath('red')
-            self.readCsv('truth')
-            self.plotPath('black')
-            self.readCsv('odom')
-            self.plotPath('blue')
-            # TODO add legend
         else:
             print('Invalid data type.')
             sys.exit()

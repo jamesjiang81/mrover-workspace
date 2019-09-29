@@ -1,5 +1,4 @@
 import numpy as np
-import math
 from filterpy.kalman import KalmanFilter
 from filterpy.common import Q_discrete_white_noise
 from scipy.linalg import block_diag
