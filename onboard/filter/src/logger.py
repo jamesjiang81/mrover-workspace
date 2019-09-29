@@ -1,6 +1,7 @@
 import csv
 import json
 import os
+from os import getenv
 import time
 
 from rover_common import aiolcm
@@ -63,6 +64,13 @@ class Logger:
         # Temp mov_avg filter
         self.mov_avg_millis = time.time() * 1000
 
+        # Initialize sensor timestamps
+        self.gps_millis = time.time() * 1000
+        self.phone_millis = time.time() * 1000
+        self.imu_millis = time.time() * 1000
+        self.nav_status_millis = time.time() * 1000
+        self.odom_millis = time.time() * 1000
+
     def write(self, contents, type):
         # Writes contents to the log specified by type
         # with open(self.file_path + type + 'Log.csv', 'w') as log:
@@ -73,6 +81,7 @@ class Logger:
 
     def gps_callback(self, channel, msg):
         gps = GPS.decode(msg)
+<<<<<<< HEAD
         if (time.time()*1000 - self.gps_millis) > \
                 self.logConfig['rate_millis']['gps']:
             self.write([gps.latitude_deg, gps.latitude_min, gps.longitude_deg,
@@ -108,6 +117,7 @@ class Logger:
             self.nav_status_millis = time.time()*1000
 
     def odom_callback(self, channel, msg):
+<<<<<<< HEAD
         odom = Odometry.decode(msg)
         if (time.time()*1000 - self.odom_millis) > \
                 self.logConfig['rate_millis']['odom']:
@@ -128,11 +138,9 @@ class Logger:
 
 if __name__ == "__main__":
     logger = Logger()
-<<<<<<< HEAD
             self.write([gps.latitude_deg, gps.latitude_min, gps.longitude_deg,
                         gps.longitude_min, gps.bearing_deg, gps.speed], 'gps')
             self.gps_millis = time.time()*1000
->>>>>>> Add random data generator for plotter testing. Minor bug fixes in logger. Python linter will hate me. It's ok though, the hatred is mutual.
 
     def phone_callback(self, channel, msg):
         phone = SensorPackage.decode(msg)
