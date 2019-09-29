@@ -160,7 +160,6 @@ class Plotter:
                 title += self.data[0][i] + '=' + self.data[1][i] + ', '
 
             plot.legend(loc='upper right')
-
         elif data_type == 'gpsComp':
             self.readCsv('gps')
             self.plotPath('red')

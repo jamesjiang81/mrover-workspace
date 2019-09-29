@@ -17,6 +17,11 @@ from .conversions import meters2lat, meters2long, lat2meters, long2meters, \
 # don't have nav status in here yet
 # TODO handle losing sensors
 
+# Testing simulator
+from . import simulator
+
+path_generator = simulator.path_gen()
+
 
 class StateEstimate:
     # class for the current state estimates

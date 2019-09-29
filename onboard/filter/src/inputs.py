@@ -93,6 +93,9 @@ class RawBearingSensor(ABC):
     def ready(self):
         return self.bearing_degs is not None
 
+    def ready(self):
+        return self.bearing is not None
+
     def update(self, new_bearing_sensor):
         # Account for non-standardized LCM structs >:(
         if hasattr(new_bearing_sensor, 'bearing'):
