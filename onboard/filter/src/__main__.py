@@ -11,6 +11,8 @@ from rover_common.aiohelper import run_coroutines
 from .rawmessages import RawIMU, RawGPS, RawSensorPackage, RawNavStatus
 from .filterObjects import NavState, Odom, LocationEstimate, \
                            BearingEstimate, Acceleration, Velocity
+# temp
+from .logger import Logger
 
 
 class SensorFusion:
@@ -487,7 +489,10 @@ def main():
     lcm_.subscribe("/nav_status", filter_.nav_status_callback)
     lcm_.subscribe("/sensor_package", filter_.sensor_package_callback)
 
-    run_coroutines(lcm_.loop(), filter_.calc_odom(lcm_))
+    # temp
+    logger = Logger()
+
+    run_coroutines(lcm_.loop(), logger.lcm.loop(), filter_.calc_odom(lcm_))
 
 
 if __name__ == "__main__":
