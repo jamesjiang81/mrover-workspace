@@ -1,1 +1,4 @@
 import numpy
+
+class LinearKalman:
+    
