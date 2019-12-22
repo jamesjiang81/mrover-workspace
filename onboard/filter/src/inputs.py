@@ -17,14 +17,14 @@ class RawAccelSensor(ABC):
         self.accel_z = new_accel_sensor.accel_z
 
     # Converts acceleration to absolute components
-    def absolutify(self, bearing, pitch):
+    def absolutifyAccel(self, bearing, pitch):
         if self.accel_x is None or bearing is None or pitch is None:
             return None
 
-        _accel_north = self.accel_x * math.cos(pitch) * math.sin(90 - bearing)
-        _accel_east = self.accel_x * math.cos(pitch) * math.cos(90 - bearing)
-        _accel_z = self.accel_x * math.sin(pitch)
-        return AbsAcceleration(_accel_north, _accel_east, _accel_z)
+        accel_north = self.accel_x * math.cos(pitch) * math.sin(90 - bearing)
+        accel_east = self.accel_x * math.cos(pitch) * math.cos(90 - bearing)
+        accel_z = self.accel_x * math.sin(pitch)
+        return Acceleration(accel_north, accel_east, accel_z)
 
 
 class RawVelSensor(ABC):
@@ -37,7 +37,7 @@ class RawVelSensor(ABC):
         self.vel_raw = new_vel_sensor.speed
 
     # Separates vel_raw into absolute components
-    def separateAbsolute(self, bearing):
+    def absolutifyVel(self, bearing):
         if self.vel_raw is None or bearing is None:
             return None
 
@@ -47,7 +47,7 @@ class RawVelSensor(ABC):
 
         _vel_north = self.vel_raw * math.sin(90 - bearing)
         _vel_east = self.vel_raw * math.cos(90 - bearing)
-        return AbsVelocity(_vel_north, _vel_east, 0)
+        return Velocity2D(_vel_north, _vel_east)
 
 
 class RawPosSensor(ABC):
@@ -64,6 +64,10 @@ class RawPosSensor(ABC):
         self.lat_min = new_pos_sensor.latitude_min
         self.long_deg = new_pos_sensor.longitude_deg
         self.long_min = new_pos_sensor.longitude_min
+
+    def asDecimal(self):
+        return PositionDegs(self.lat_deg + self.lat_min / 60,
+                            self.long_deg + long_min / 60)
 
 
 class RawBearingSensor(ABC):
@@ -95,11 +99,21 @@ class RawIMU(RawAccelSensor, RawBearingSensor):
         self.roll = None
         self.pitch = None
         self.yaw = None
+        self.valid = False
 
     def update(self, new_imu):
         # Updates the IMU with new LCM data
-        # TODO for new IMU
-        pass
+        RawAccelSensor.update(self, new_imu)
+        RawBearingSensor.update(self, new_imu)
+        self.gyro_x = new_imu.gyro_x
+        self.gyro_y = new_imu.gyro_y
+        self.gyro_z = new_imu.gyro_z
+        self.mag_x = new_imu.mag_x
+        self.mag_y = new_imu.mag_y
+        self.mag_z = new_imu.mag_z
+        self.roll = new_imu.roll
+        self.pitch = new_imu.pitch
+        self.yaw = new_imu.yaw
 
 
 class RawEncoder(RawVelSensor):
@@ -122,6 +136,7 @@ class RawGPS(RawVelSensor, RawPosSensor, RawBearingSensor):
         RawVelSensor.__init__(self)
         RawPosSensor.__init__(self)
         RawBearingSensor.__init__(self)
+        self.valid = False
 
     def update(self, new_gps):
         # Updates the GPS with new LCM data
@@ -136,6 +151,7 @@ class RawPhone(RawPosSensor, RawBearingSensor):
     def __init__(self):
         RawPosSensor.__init__(self)
         RawBearingSensor.__init__(self)
+        self.valid = False
 
     def update(self, new_phone):
         # Updates the phone with new LCM data
@@ -143,7 +159,7 @@ class RawPhone(RawPosSensor, RawBearingSensor):
         RawBearingSensor.update(self, new_phone)
 
 
-class AbsAcceleration:
+class Acceleration:
     # Class for absolute acceleration
     def __init__(self, north, east, z):
         self.north = north
@@ -151,9 +167,28 @@ class AbsAcceleration:
         self.z = z
 
 
-class AbsVelocity:
+class Velocity2D:
     # Class for absolute velocity
-    def __init__(self, north, east, z):
+    def __init__(self, north, east):
         self.north = north
         self.east = east
-        self.z = z
+
+    def pythagorean(self):
+        return math.sqrt(self.north**2 + self.east**2)
+
+
+class PositionDegs:
+    # Class for position in decimal degrees
+    def __init__(self, lat_deg, long_deg):
+        self.lat_deg = lat_deg
+        self.long_deg = long_deg
+
+
+class RawNavStatus:
+    # Class for nav status
+
+    def __init__(self):
+        self.nav_status = None
+
+    def update(self, new_nav_status):
+        self.nav_status = new_nav_status.nav_state_name
