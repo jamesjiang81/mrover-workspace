@@ -14,6 +14,9 @@ from .inputs import RawGPS, RawPhone, RawIMU, Acceleration, \
 from .logger import Logger
 from .linearKalman import LinearKalman
 
+# Testing simulator
+import simulator
+
 
 class StateEstimate:
     # Abstract class for the current state estimate
