@@ -3,7 +3,19 @@ import os
 import math
 import sys
 import matplotlib.pyplot as plot
+#TODO integrate with simulator
 
+def lat2meters(lat):
+    return lat * (math.pi/180) * 6371000
+
+def long2meters(long, lat):
+    return lat2meters(long) * math.cos((math.pi / 180) * lat)
+
+def meters2lat(meters):
+    return (meters * 180) / (math.pi * 6371000)
+
+def meters2long(meters, lat):
+    return meters2lat(meters) / math.cos((math.pi/180) * lat)
 
 class Plotter:
 
@@ -11,7 +23,7 @@ class Plotter:
         # Reads in the CSV file specified by log
 
         path_self = os.path.abspath(os.path.dirname(__file__))
-        file_path = os.path.join(path_self, 'logs/')
+        file_path = os.path.join(path_self, '../logs/')
 
         # Read data
         self.data = numpy.genfromtxt(file_path + type + 'Log.csv',
@@ -28,12 +40,11 @@ class Plotter:
 
         # Convert to meters
         for i in range(len(long)):
-            long[i] = long[i] * (math.pi/180) * 6371000 * math.cos((math.pi/180)*mean_lat)
-            lat[i] = lat[i] * (math.pi/180) * 6371000
-
+            long[i] = long2meters(long[i], mean_lat)
+            lat[i] = lat2meters(lat[i])
         # Calculate delta vectors
-        delta_long = long - numpy.mean(long)
-        delta_lat = lat - numpy.mean(lat)
+        delta_long = long - long2meters(83.7382, 42.277)
+        delta_lat = lat - lat2meters(42.277)
 
         # Calculate error circles
         sigma_long = numpy.std(delta_long)
@@ -63,8 +74,9 @@ class Plotter:
         plot.title('GPS Coordinates')
         subplot = plot.subplot(1, 2, 1)
         subplot.text(0.5, -0.15, 'Long-Variance: ' + str(numpy.var(long)) +
-                  '\nLat-Variance ' + str(numpy.var(lat)), ha='center',
-                  transform=subplot.transAxes)
+                  '\nLat-Variance ' + str(numpy.var(lat)) + '\nLong-Mean: ' +
+                  str(meters2long(numpy.mean(long), 42.277)) + '\nLat-Man: ' +
+                  str(meters2lat(numpy.mean(lat))), ha='center', transform=subplot.transAxes)
         plot.legend(handles=[cep_label, _2drms_label], labels=['CEP', '2DRMS'])
 
     def plotSpeed(self, subplot_loc):
@@ -76,7 +88,7 @@ class Plotter:
         plot.axis([0, 5*self.data.shape[0], numpy.amin(self.data['speed']),
                   numpy.amax(self.data['speed'])])
         plot.xlabel('Time (seconds)')
-        plot.ylabel('Speed (idk)')
+        plot.ylabel('Speed (m/s)')
         plot.title('Speed')
 
     def plotBearing(self, subplot_loc):
