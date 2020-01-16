@@ -10,4 +10,9 @@ scipy==1.2.1
 odrive==0.4.11
 filterpy==1.4.5
 matplotlib==3.0.3
+ipython
+jupyter
+pandas
+sympy
+nose
 
