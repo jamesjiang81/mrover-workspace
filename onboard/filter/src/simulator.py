@@ -15,27 +15,7 @@ Result is a correct path and a noisy path to filter.
 Stretch Goal is plot noisy, filtered, and true paths and calculate deviation of
 filtered path from truth
 '''
-# sudo apt-get install python3-tk needed to work
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy import interpolate
-from scipy.interpolate import interp1d
-from scipy.misc import derivative
-import matplotlib.pyplot as plt
 
-x = np.linspace(0, 10, num=11, endpoint=True)
-y = np.array([1, 3, 3, -2, 5, 6, 7, 6, 9, 3, 11])
-f = interp1d(x, y)
-f2 = interp1d(x, y, kind='cubic')
-
-vel = [ derivative(f2, point, n=1) for point in x[1:-1] ]
-acc = [ derivative(f2, point, n=2) for point in x[1:-1] ]
-print(vel, acc)
-
-xnew = np.linspace(0, 10, num=41, endpoint=True)
-plt.plot(x, y, 'o', xnew, f(xnew), '-', xnew, f2(xnew), '--')
-plt.legend(['data', 'linear', 'cubic'], loc='best')
-plt.show()
 
 # MAXIMUM_JERK = .5
 # MAXIMUM_ACCEL = 5
