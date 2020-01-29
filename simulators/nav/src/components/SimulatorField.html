@@ -28,6 +28,8 @@ const WAYPOINT_SIZE = 10;
 const TENNIS_BALL_SIZE = 4;
 // const ROCK_SIZE = 25;
 const ROCK_SIZE_M = 1.2; // meters
+const ROVER_FIELD_OF_VIEW = 2*Math.PI/3;
+const ROVER_DEPTH_OF_VIEW = 5;
 const POST_BLOCKING_ANGLE = 15 * Math.PI/180; // A post behind another post must be at least 15 degrees offset to be visible
 
 function ensure_in_range(x, min, max) {
@@ -242,6 +244,33 @@ export default {
             return (b0 == b1) && (b1 == b2);
         };
 
+        const get_triangle = (scale, odom) => {
+            // const rock_radius = ROCK_SIZE/scale;
+            const rock_radius = ROCK_SIZE_M;
+            const coords = this.projection(to_decimal(odom));
+            // const root_2 = Math.sqrt(2);
+            const h =  rock_radius * Math.sin(Math.PI - ROVER_FIELD_OF_VIEW) / Math.sin(ROVER_FIELD_OF_VIEW / 2);
+            const theta_r = odom.bearing_deg * Math.PI / 180;
+            const x_0 = coords.x - h * Math.sin(theta_r); // switched sign
+            const y_0 = coords.y - h * Math.cos(theta_r); // switched sign
+            const x_c = coords.x + (ROVER_DEPTH_OF_VIEW + rock_radius) * Math.sin(theta_r);
+            const y_c = coords.y + (ROVER_DEPTH_OF_VIEW + rock_radius) * Math.cos(theta_r);
+            // d = smaller triangle d + extension
+            let d = ROVER_DEPTH_OF_VIEW * Math.tan(ROVER_FIELD_OF_VIEW / 2);
+            const alpha = (180 - ROVER_FIELD_OF_VIEW) / 2;
+            const h_prime = rock_radius * Math.sin(Math.PI - alpha) / Math.sin(alpha / 2);
+            const delta_d = Math.sqrt(h_prime * h_prime - rock_radius * rock_radius);
+            d += delta_d;
+            const crossbar = {
+                x1: x_c - d * Math.cos(theta_r),
+                y1: y_c + d * Math.sin(theta_r),
+                x2: x_c + d * Math.cos(theta_r),
+                y2: y_c - d * Math.sin(theta_r)
+            };
+
+            return { x_0, y_0, crossbar, x_c, y_c };
+        };
+
         const find_occupied = (odom, rcoords, occupied_angles, rock_radius) => {
             const pos = this.projection(to_decimal(odom));
             const delta_x = rcoords.x - pos.x;
@@ -303,7 +332,7 @@ export default {
             // can we move straight ahead
             const rover_width = ROVER_SIZE_M;
             let path_clear = true;
-            const clearance_angle = Math.atan2(rover_width, this.get('depth_of_view')) * 180 / Math.PI;
+            const clearance_angle = Math.atan2(rover_width, ROVER_DEPTH_OF_VIEW) * 180 / Math.PI;
             for (let i = 60 - clearance_angle|0; i < 60 + clearance_angle|0; ++i) {
                 if (occupied_angles[i]) path_clear = false;
             }
@@ -624,6 +653,8 @@ export default {
                 post1.detected = false;
                 post1.id = this.get("target1_id");
 
+                console.log(this.get('gate_width'));
+                console.log(this.get('gate_width') === 3);
                 let post2 = this.shift_x_meters({lat, lon}, this.get('gate_width'), angle);
                 post2.id = this.get("target2_id");
 
