@@ -45,8 +45,7 @@ def represent_data(x, y):
         else:
             vel_direcs.append(pi/2)
 
-    vel_direcs_np = np.array([])
-    vel_direcs_np = vel_direcs
+    vel_direcs_np = np.array(vel_direcs)
 
     x_vel_mag = np.diff(x_path)
     y_vel_mag = np.diff(y_path)
@@ -62,8 +61,7 @@ def represent_data(x, y):
         else:
             accel_direcs.append(pi/2)
 
-    accel_direcs_np = np.array([])
-    accel_direcs_np = accel_direcs
+    accel_direcs_np = np.array(accel_direcs)
 
     print(len(x_path))
     print(len(y_path))
