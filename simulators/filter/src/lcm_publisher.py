@@ -17,12 +17,12 @@ def main():
 
     for point_info in path_data:
         gps = GPS()
-        gps.latitude_deg = point_info.latitude_deg
-        gps.longitude_deg = point_info.longitude_deg
-        gps.latitude_min = point_info.latitude_min
-        gps.longitude_min = point_info.longitude_min
-        gps.bearing_deg = point_info.bearing_gps
-        gps.speed = point_info.speed
+        gps.latitude_deg = float(point_info.latitude_deg)
+        gps.longitude_deg = float(point_info.longitude_deg)
+        gps.latitude_min = float(point_info.latitude_min)
+        gps.longitude_min = float(point_info.longitude_min)
+        gps.bearing_deg = float(point_info.bearing_gps)
+        gps.speed = float(point_info.speed)
         lcm.publish('/gps', gps.encode())
 
         imu_msg = IMU()
