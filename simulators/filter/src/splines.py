@@ -155,7 +155,7 @@ def plot_acceleration_bearings(gps_path, path_accel_direc):
 
 def publish_data(gps_path, path_vel_direc, path_vel_mag, path_accel_mag):
     chinese = []
-    for i in range(0, len(path_vel_mag)):
+    for i in range(0, len(path_vel_mag[0]) - 1):
         gen_data = GeneratedData()
         long_deg = int(gps_path[0][i])
         long_min = (gps_path[0][i] - long_deg) * 60

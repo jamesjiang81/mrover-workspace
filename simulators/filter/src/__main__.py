@@ -38,6 +38,5 @@ def main():
         imu_msg.bearing = point_info.bearing_imu
         lcm.publish('/imu', imu_msg.encode())
 
-
 if __name__ == "__main__":
     main()
