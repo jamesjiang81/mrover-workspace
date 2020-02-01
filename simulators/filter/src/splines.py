@@ -163,8 +163,8 @@ def publish_data(gps_path, path_vel_direc, path_vel_mag, path_accel_mag):
         lat_min = (gps_path[1][i] - lat_deg) * 60
         bearing = path_vel_direc[i]
         speed = calculate_speed(path_vel_mag[0][i], path_vel_mag[1][i])
-        x_accel = 0
-        y_accel = path_accel_mag
+        x_accel = 0.0
+        y_accel = path_accel_mag[1][i]
         # magnitude_x and magnitude_y are both 0 (last 2 args) because we didn't know what to do for that
         gen_data.set_values(lat_deg, lat_min, long_deg, long_min, bearing, speed, x_accel, y_accel, 0, 0)
         chinese.append(gen_data)
