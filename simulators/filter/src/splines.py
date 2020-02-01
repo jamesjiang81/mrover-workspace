@@ -21,16 +21,16 @@ class GeneratedData:
         self.bearing_gps = 0
         self.speed = 0
 
-        self.accel_x = 0
-        self.accel_y = 0
-        self.accel_z = 0
-        self.gyro_x = 0
-        self.gyro_y = 0
-        self.gyro_z = 0
-        self.magnitude_x = 0
-        self.magnitude_y = 0
-        self.magnitude_z = 0
-        self.bearing_imu = 0
+        self.accel_x = 0.0
+        self.accel_y = 0.0
+        self.accel_z = 0.0
+        self.gyro_x = 0.0
+        self.gyro_y = 0.0
+        self.gyro_z = 0.0
+        self.magnitude_x = 0.0
+        self.magnitude_y = 0.0
+        self.magnitude_z = 0.0
+        self.bearing_imu = 0.0
 
     def set_values(self, latitude_deg, latitude_min, longitude_deg, longitude_min, bearing_gps, speed, accel_x, accel_y, magnitude_x, magnitude_y):
         self.latitude_deg = latitude_deg
