@@ -12,7 +12,7 @@ def main():
     x = np.linspace(x[0], x[1], num=num_pts)
     y_str = stdin.readline().replace("\n", "")
     y = list(map(float, y_str.split()))
-    y = np.array([y])
+    y = np.array(y)
     path_data = path_generator(x, y)
 
     lcm = aiolcm.AsyncLCM()
