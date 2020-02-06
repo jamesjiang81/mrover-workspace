@@ -2,15 +2,17 @@ from rover_common import aiolcm
 from rover_msgs import GPS, IMU
 from .splines import path_generator
 import numpy as np
+from sys import stdin
 
 
 def main():
-    x = np.linspace(42.277, 42.292, num=40)
-    y = np.array(
-        [83.737, 83.739, 83.739, 83.740, 83.738, 83.736, 83.736, 83.735, 83.735, 83.732, 83.733, 83.731, 83.730, 83.725,
-         83.724, 83.723, 83.724, 83.721, 83.723, 83.727, 83.728, 83.733, 83.732, 83.733,
-         83.735, 83.737, 83.740, 83.742, 83.741, 83.744, 83.745, 83.747, 83.750, 83.753, 83.751, 83.749, 83.748, 83.747,
-         83.748, 83.748])
+    x_str = stdin.readline().replace("\n", "")
+    x = list(map(float, x_str.split()))
+    num_pts = int(stdin.readline().replace("\n", ""))
+    x = np.linspace(x[0], x[1], num=num_pts)
+    y_str = stdin.readline().replace("\n", "")
+    y = list(map(float, y_str.split()))
+    y = np.array([y])
     path_data = path_generator(x, y)
 
     lcm = aiolcm.AsyncLCM()
