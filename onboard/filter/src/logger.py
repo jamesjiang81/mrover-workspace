@@ -141,7 +141,6 @@ if __name__ == "__main__":
             self.write([gps.latitude_deg, gps.latitude_min, gps.longitude_deg,
                         gps.longitude_min, gps.bearing_deg, gps.speed], 'gps')
             self.gps_millis = time.time()*1000
->>>>>>> Add random data generator for plotter testing. Minor bug fixes in logger. Python linter will hate me. It's ok though, the hatred is mutual.
 
     def phone_callback(self, channel, msg):
         phone = SensorPackage.decode(msg)
@@ -183,4 +182,3 @@ if __name__ == "__main__":
 
 if __name__ == "__main__":
     logger = Logger()
->>>>>>> Working logger w/ toods
